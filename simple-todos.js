@@ -21,6 +21,7 @@ if (Meteor.isClient) {
   });
     Template.body.events({
     "submit .new-task": function (event) {
+      
       // Prevent default browser form submit
       event.preventDefault();
 
@@ -30,7 +31,9 @@ if (Meteor.isClient) {
       // Insert a task into the collection
       Tasks.insert({
         text: text,
-        createdAt: new Date() // current time
+        createdAt: new Date(),             // current time
+        owner: Meteor.userId(),            //_id of Logged in user
+        username: Meteor.user().username   //username of Logged in user
       });
 
       // Clear form
@@ -40,7 +43,7 @@ if (Meteor.isClient) {
       Session.set("hideCompleted", event.target.checked);
     }
   });
-
+      
       Template.task.events({
     "click .toggle-checked": function () {
       // Set the checked property to the opposite of its current value
@@ -51,5 +54,9 @@ if (Meteor.isClient) {
     "click .delete": function () {
       Tasks.remove(this._id);
     }
+  });
+
+  Accounts.ui.config({
+    passwordSignupFields: "USERNAME_ONLY"
   });
 }
